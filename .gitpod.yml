@@ -5,7 +5,10 @@ ports:
   - port: 6379
     onOpen: ignore
     visibility: private
-  - port: 8000
+  - port: 3000
+    visibility: public
+    onOpen: open-browser
+  - port: 3001
     visibility: public
     onOpen: open-browser
 
@@ -23,18 +26,18 @@ tasks:
   - name: Start Node Stack1
     init: | 
      npm i
-    command: npm run start
+    command: gp sync-await finished && npm run start
     openMode: tab-after
     env:
-      PORT: 8000
+      PORT: 3000
 
   - name: Start Node Stack2
     init: | 
      npm i
-    command: npm run start
+    command: gp sync-await finished && npm run start
     openMode: tab-after
     env:
-      PORT: 8001
+      PORT: 3001
 
 github: 
   prebuilds:
