@@ -20,13 +20,21 @@ tasks:
      gp sync-done finished
     openMode: tab-after
   
-  - name: Start Node Stack
+  - name: Start Node Stack1
     init: | 
      npm i
     command: npm run start
     openMode: tab-after
     env:
       PORT: 8000
+
+  - name: Start Node Stack2
+    init: | 
+     npm i
+    command: npm run start
+    openMode: tab-after
+    env:
+      PORT: 8001
 
 github: 
   prebuilds:

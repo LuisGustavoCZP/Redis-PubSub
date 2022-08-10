@@ -2,16 +2,17 @@ const express = require("express");
 require('dotenv').config();
 const {PORT:port} = process.env;
 const Redis = require("ioredis");
-const redis = new Redis();
+const redis_sub = new Redis();
+const redis_pub = new Redis();
 
 const app = express();
 
-const configs = {
+let configs = {
     loginTries:3,
     failedWait:30
 }
 
-redis.subscribe("server-config", (err, count) => {
+redis_sub.subscribe("server-config", (err, count) => {
     if (err) {
       // Just like other commands, subscribe() can fail for some reasons,
       // ex network issues.
@@ -24,9 +25,9 @@ redis.subscribe("server-config", (err, count) => {
     }
 });
 
-redis.on("message", (channel, message) => {
+redis_sub.on("message", (channel, message) => {
     console.log(`Received ${message} from ${channel}`);
-    //configs = message;
+    configs = JSON.parse(message);
 });
 
 app.get("/", (req, res) => 
@@ -37,7 +38,7 @@ app.get("/", (req, res) =>
         if(login_tries && login_tries!='') configs.loginTries = login_tries;
         if(failed_wait && failed_wait!='') configs.failedWait = failed_wait;
 
-        redis.publish("server-config", JSON.stringify(configs));
+        redis_pub.publish("server-config", JSON.stringify(configs));
     }
     //console.log(login_tries, "\n", failed_wait);
 
